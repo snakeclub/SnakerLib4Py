@@ -173,10 +173,9 @@ class PromptPlusCmdParaLexer(Lexer):
         _last_word = cmd_para_str[current_info[5]: position]
         if deal_char == ' ':
             # 引号外遇到空格，代表上一个字的结束
-            if (_last_word != '' and _last_word[0:1] == '-' and
-                    self._match_cmd_para_str(match_str=_last_word[1:], cmd=match_cmd,
-                                             match_type='long_para') != ''
-                ):
+            if _last_word != '' and _last_word[0:1] == '-' and \
+                self._match_cmd_para_str(match_str=_last_word[1:], cmd=match_cmd,
+                                         match_type='long_para') != '':
                 # 开始是按短参数匹配的，判断是否能匹配到长参数，如果可以，则修改为长参数
                 _deal_index = _last_index
                 # 注意_deal_index有可能变成-1，因此需要进行判断
@@ -362,7 +361,8 @@ class PromptPlusCmdParaLexer(Lexer):
         _cmd_style = ('class:cmd', _cmd)
         _current_info = list()
         _para_style = self._get_line_tokens(
-            line=lines[0][len(_cmd):], match_cmd=_match_cmd, start_in_string=False, current_info=_current_info
+            line=lines[0][len(_cmd):], match_cmd=_match_cmd, start_in_string=False,
+            current_info=_current_info
         )
         _para_style.insert(0, _cmd_style)
         _style_list[0] = _para_style
@@ -462,7 +462,7 @@ class PromptPlusCompleter(Completer):
 
         @param {string} match_str='' - 要匹配的关键字
         @param {string} cmd='' - 关键字所处的命令（如果要匹配命令则无需传入）
-        @param {string} match_type='' - 匹配类型（cmd\name_para\short_para\long_para）
+        @param {string} match_type='' - 匹配类型（cmd|name_para|short_para|long_para）
 
         @returns {string} - 没有匹配上返回''，匹配上返回对应的关键字
         """
@@ -922,12 +922,10 @@ class PromptPlus(object):
         """
         # 根据传入参数设置一些特殊值，简化外部处理
         # History
-        if ('enable_history_search' in self._prompt_init_para.keys()
-                    and self._prompt_init_para['enable_history_search']
-                    and ('history' not in self._prompt_init_para.keys()
-                         or self._prompt_init_para['history'] is None
-                         )
-                ):
+        if 'enable_history_search' in self._prompt_init_para.keys() \
+            and self._prompt_init_para['enable_history_search'] \
+            and ('history' not in self._prompt_init_para.keys() or
+                 self._prompt_init_para['history'] is None):
             # 要启动历史检索功能，但未指定对象
             self._prompt_init_para['history'] = InMemoryHistory()
 
