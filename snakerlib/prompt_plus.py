@@ -1,5 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
+# Copyright 2018 黎慧剑
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 
 """
 增强的交互命令行扩展处理，基于prompt_toolkit进行封装和扩展
@@ -15,17 +29,18 @@ import time
 import sys
 from queue import Queue
 import asyncio
-from generic import CResult, ExceptionTools
-from simple_stream import StringStream
-from prompt_toolkit import prompt, Prompt
-from prompt_toolkit.key_binding import KeyBindings
-from prompt_toolkit.enums import EditingMode
+# from prompt_toolkit import prompt, Prompt
+from prompt_toolkit import prompt
+# from prompt_toolkit.key_binding import KeyBindings
+# from prompt_toolkit.enums import EditingMode
 from prompt_toolkit.eventloop.defaults import use_asyncio_event_loop
 from prompt_toolkit.patch_stdout import patch_stdout
 from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.styles import Style
 from prompt_toolkit.lexers import Lexer
 from prompt_toolkit.completion import Completer, Completion
+from snakerlib.generic import CResult, ExceptionTools
+from snakerlib.simple_stream import StringStream
 
 
 __MOUDLE__ = 'prompt_plus'  # 模块名
@@ -37,7 +52,7 @@ __PUBLISH__ = '2018.06.30'  # 发布日期
 
 class PromptPlusCmdParaLexer(Lexer):
     """
-    PromptPlus的命令关键字解析器
+    PromptPlus的命令关键字解析器，继承prompt_toolkit.Lexer类
     """
 
     #############################
@@ -57,7 +72,7 @@ class PromptPlusCmdParaLexer(Lexer):
 
         @param {string} match_str='' - 要匹配的关键字
         @param {string} cmd='' - 关键字所处的命令（如果要匹配命令则无需传入）
-        @param {string} match_type='' - 匹配类型（cmd\name_para\short_para\long_para）
+        @param {string} match_type='' - 匹配类型（cmd|name_para|short_para|long_para）
 
         @returns {string} - 没有匹配上返回''，匹配上返回对应的关键字
         """
@@ -76,9 +91,9 @@ class PromptPlusCmdParaLexer(Lexer):
                     _ret_key = match_str
         else:
             # 匹配命令参数名
-            if not(cmd not in self._cmd_para.keys()
-                   or match_type not in self._cmd_para[cmd].keys()
-                   or self._cmd_para[cmd][match_type] is None
+            if not(cmd not in self._cmd_para.keys() or
+                   match_type not in self._cmd_para[cmd].keys() or
+                   self._cmd_para[cmd][match_type] is None
                    ):
                 if self._ignore_case:
                     for _key in self._cmd_para[cmd][match_type].keys():
@@ -112,7 +127,7 @@ class PromptPlusCmdParaLexer(Lexer):
             [('style_str','char_str'), ('style_str','char_str'), ...]
             注意：字符处理完后可能会在最后多一个char_str为空的列表项，完整结束后需判断和删除
         @param {list} info_list=None - 与style_list一一对应，等级每个标记的具体信息，传入的是上一个字符处理后的列表，
-            处理中会更新，格式为:[开始位置(int), 结束位置(int), 标记类型(''\cmd\name_para\short_para\long_para\wrong)]
+            处理中会更新，格式为:[开始位置(int), 结束位置(int), 标记类型(''|cmd|name_para|short_para|long_para|wrong)]
         """
         # 初始化可变入参
         if current_info is None:
@@ -158,9 +173,9 @@ class PromptPlusCmdParaLexer(Lexer):
         _last_word = cmd_para_str[current_info[5]: position]
         if deal_char == ' ':
             # 引号外遇到空格，代表上一个字的结束
-            if (_last_word != '' and _last_word[0:1] == '-'
-                    and self._match_cmd_para_str(match_str=_last_word[1:], cmd=match_cmd,
-                                                 match_type='long_para') != ''
+            if (_last_word != '' and _last_word[0:1] == '-' and
+                    self._match_cmd_para_str(match_str=_last_word[1:], cmd=match_cmd,
+                                             match_type='long_para') != ''
                 ):
                 # 开始是按短参数匹配的，判断是否能匹配到长参数，如果可以，则修改为长参数
                 _deal_index = _last_index
@@ -226,7 +241,8 @@ class PromptPlusCmdParaLexer(Lexer):
             # 延续字符的处理，只需要特殊判断是否短参数的情况
             if not current_info[2]:
                 # 按短参数匹配处理
-                if self._match_cmd_para_str(match_str=deal_char, cmd=match_cmd, match_type='short_para') != '':
+                if self._match_cmd_para_str(match_str=deal_char, cmd=match_cmd,
+                                            match_type='short_para') != '':
                     # 匹配上
                     style_list[_last_index] = ('class:short_para', deal_char)
                     info_list[_last_index][1] = position + 1
@@ -907,11 +923,11 @@ class PromptPlus(object):
         # 根据传入参数设置一些特殊值，简化外部处理
         # History
         if ('enable_history_search' in self._prompt_init_para.keys()
-            and self._prompt_init_para['enable_history_search']
-            and ('history' not in self._prompt_init_para.keys()
-                or self._prompt_init_para['history'] is None
-                )
-            ):
+                    and self._prompt_init_para['enable_history_search']
+                    and ('history' not in self._prompt_init_para.keys()
+                         or self._prompt_init_para['history'] is None
+                         )
+                ):
             # 要启动历史检索功能，但未指定对象
             self._prompt_init_para['history'] = InMemoryHistory()
 
