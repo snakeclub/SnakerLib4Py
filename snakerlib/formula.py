@@ -7,8 +7,8 @@ import copy
 import datetime
 from operator import itemgetter
 from enum import Enum
-from simple_stream import StringStream
-from generic import NullObj, DebugTools, StringTools
+from snakerlib.simple_stream import StringStream
+from snakerlib.generic import NullObj, DebugTools, StringTools
 
 
 __MoudleName__ = 'formula'
@@ -231,7 +231,8 @@ class FormulaTool(object):
         _result_info = NullObj()
         _result_info.start_pos = match_info.start_pos  # 匹配结果开始位置（不含前置字符）
         _result_info.end_pos = match_info.end_pos  # 匹配结果结束位置（不含后置字符）
-        _result_info.source_str = source_str[_result_info.start_pos: _result_info.end_pos]  # 匹配到的原文字符串
+        # 匹配到的原文字符串
+        _result_info.source_str = source_str[_result_info.start_pos: _result_info.end_pos]
         _result_info.front_char = match_info.front_char  # 匹配到的前置字符
         _result_info.end_char = match_info.end_char  # 匹配到的后置字符
         match_result[match_str][_result_info.start_pos] = _result_info
@@ -513,14 +514,16 @@ class FormulaTool(object):
             _match_info = match_result[_current_index]
             # 判断是否父节点的结束
             if parent_key is not None:
-                _key = FormulaTool.__is_match_keyword(match_info=_match_info, keywords=keywords, key=parent_key)
+                _key = FormulaTool.__is_match_keyword(
+                    match_info=_match_info, keywords=keywords, key=parent_key)
                 if _key is not None:
                     # 找到父节点的结束标签，直接返回
                     _loop_result[1] = _current_index
                     return _loop_result
 
             # 找下一个开始标签
-            _key = FormulaTool.__is_match_keyword(match_info=_match_info, keywords=keywords, key=None)
+            _key = FormulaTool.__is_match_keyword(
+                match_info=_match_info, keywords=keywords, key=None)
             if _key is None:
                 # 不是关键字，移动到下一个
                 _current_index = _current_index + 1
@@ -554,7 +557,8 @@ class FormulaTool(object):
                     )
                     while _current_index < _maxlen:
                         _match_info = match_result[_current_index]
-                        _endkey = FormulaTool.__is_match_keyword(match_info=_match_info, keywords=keywords, key=_key)
+                        _endkey = FormulaTool.__is_match_keyword(
+                            match_info=_match_info, keywords=keywords, key=_key)
                         # DebugTools.debug_print(endkey=_endkey)
                         if _endkey is None:
                             # 没有匹配到结束字符，继续找下一个
@@ -587,7 +591,8 @@ class FormulaTool(object):
                     else:
                         # 没有匹配到结束，抛出异常
                         raise LookupError(u'未找到字符串公式%s[ %s ]的结束标记[ %s ]，开始位置: %s' % (
-                            _key, keywords[_key][0][0], keywords[_key][1][0], str(_formula.start_pos)
+                            _key, keywords[_key][0][0], keywords[_key][1][0], str(
+                                _formula.start_pos)
                         ))
                 elif not keywords[_key][2].has_sub_formula:
                     # 没有子公式的情况，直接找结束字符位置
@@ -598,7 +603,8 @@ class FormulaTool(object):
                     )
                     while _current_index < _maxlen:
                         _match_info = match_result[_current_index]
-                        _endkey = FormulaTool.__is_match_keyword(match_info=_match_info, keywords=keywords, key=_key)
+                        _endkey = FormulaTool.__is_match_keyword(
+                            match_info=_match_info, keywords=keywords, key=_key)
                         if _endkey is None:
                             # 没有匹配到结束字符，继续找下一个
                             _current_index = _current_index + 1
@@ -622,7 +628,8 @@ class FormulaTool(object):
                     else:
                         # 没有匹配到结束，抛出异常
                         raise LookupError(u'未找到公式%s[ %s ]的结束标记[ %s ]，开始位置: %s' % (
-                            _key, keywords[_key][0][0], keywords[_key][1][0], str(_formula.start_pos)
+                            _key, keywords[_key][0][0], keywords[_key][1][0], str(
+                                _formula.start_pos)
                         ))
                 else:
                     # 匹配到一般标签，先跳到下一个位置
@@ -646,7 +653,7 @@ class FormulaTool(object):
                                     _formula.formula_string = formula_str[_formula.start_pos: _formula.end_pos]
                                     _formula.content_end_pos = _formula.end_pos
                                     _formula.content_string = formula_str[
-                                                              _formula.content_start_pos: _formula.content_end_pos]
+                                        _formula.content_start_pos: _formula.content_end_pos]
                                     _loop_result[0].append(_formula)
                                     break
                             # 完成这个标签的处理，重新进行主循环，且从下一个标签开始位置开始处理
@@ -682,7 +689,8 @@ class FormulaTool(object):
                             ):
                                 # 必须有结束标签
                                 raise LookupError(u'未找到公式%s[ %s ]的结束标记[ %s ]，开始位置: %s' % (
-                                    _key, keywords[_key][0][0], keywords[_key][1][0], str(_formula.start_pos)
+                                    _key, keywords[_key][0][0], keywords[_key][1][0], str(
+                                        _formula.start_pos)
                                 ))
                         return _loop_result
                     else:
@@ -892,7 +900,8 @@ class FormulaTool(object):
             ]
 
         """
-        _match_result = FormulaTool.__search_all(source_str=source_str, match_list=match_list, ignore_case=ignore_case)
+        _match_result = FormulaTool.__search_all(
+            source_str=source_str, match_list=match_list, ignore_case=ignore_case)
         if not multiple_match:
             # 不允许多重匹配，检查冲突并按排序规则删除列表
             _result_list = FormulaTool.match_result_to_sorted_list(match_result=_match_result)
@@ -999,14 +1008,14 @@ class FormulaTool(object):
     _keywords = dict()  # 公式关键字定义
     _match_list = dict()  # 要检索的匹配字符清单字典(预先生成提高性能)
     _ignore_case = False  # 是否忽略大小写
-    _deal_fun_list = dict() # 公式计算函数对照字典
+    _deal_fun_list = dict()  # 公式计算函数对照字典
     _default_deal_fun = None  # 默认的公式处理函数
 
     #############################
     # 实例处理 - 内部函数
     #############################
 
-    def __run_formula(self,formular_obj, **kwargs):
+    def __run_formula(self, formular_obj, **kwargs):
         """
         @fun 进行公式对象的计算
         @funName __run_formula
@@ -1025,7 +1034,7 @@ class FormulaTool(object):
         else:
             self._default_deal_fun(formular_obj, **kwargs)
 
-    def __run_formula_as_string(self,formular_obj, **kwargs):
+    def __run_formula_as_string(self, formular_obj, **kwargs):
         """
         @fun 以字符串替换方式解析并执行公式计算
         @funName __run_formula
@@ -1040,8 +1049,8 @@ class FormulaTool(object):
         for _sub_formular_obj in formular_obj.sub_formula_list:
             self.__run_formula_as_string(formular_obj=_sub_formular_obj, **kwargs)
             # 执行字符串替换
-            formular_obj.content_string = formular_obj.content_string.replace(_sub_formular_obj.formula_string, str(_sub_formular_obj.formula_value))
-
+            formular_obj.content_string = formular_obj.content_string.replace(
+                _sub_formular_obj.formula_string, str(_sub_formular_obj.formula_value))
 
         # 计算自身
         if formular_obj.keyword in self._deal_fun_list.keys():
@@ -1177,7 +1186,7 @@ class FormulaTool(object):
 
         """
         self.reset_formula_para(keywords=keywords, ignore_case=ignore_case,
-                                deal_fun_list=deal_fun_list,default_deal_fun=default_deal_fun)
+                                deal_fun_list=deal_fun_list, default_deal_fun=default_deal_fun)
 
     def reset_formula_para(self, keywords=dict(), ignore_case=False, deal_fun_list=dict(), default_deal_fun=None):
         """

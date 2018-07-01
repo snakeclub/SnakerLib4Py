@@ -31,10 +31,12 @@ snakerlib 的目的是让开发人员用最简单的方法实现最常用的功�
 SHORT_DESCRIPTION = """
 一个方便开发人员调用的，集合一些常用开发功能的开发Python库.""".strip()
 
-DEPENDENCIES = [
+DEPENDENCIES1 = [
     'prompt-toolkit>=2.0.0',
     'gevent>=1.2.2'
 ]
+
+DEPENDENCIES = []
 
 TEST_DEPENDENCIES = []
 

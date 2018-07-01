@@ -686,10 +686,10 @@ class BaseStream(ABC):
             KeyError 当传入的流标识不存在时抛出该异常
             AttributeError 当流处理不支持向前移动，但操作需要向前移动，则抛出该异常
             EOFError 当移动的位置超过流本身数据位置，抛出EOFError异常
-        
+
         @funParam {int} position 要移动到的位置（注意位置从0开始）
         @funParam {string} stream_tag 需要处理的流处理标签
-        
+
         """
         if not self._move_forward:
             # 不支持向前移动
@@ -1049,7 +1049,7 @@ class StringStream(BaseStream):
 
         """
         return stream_obj.pos
-    
+
 
 if __name__ == "__main__":
     """

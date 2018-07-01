@@ -138,7 +138,7 @@ class RedirectOutputHandler(object):
             try:
                 with open(file=self._ouput_obj, mode='w', encoding=self._encoding) as _file:
                     pass
-            except:
+            except Exception:
                 # 出现异常，输出异常信息到界面
                 sys.stderr.write(traceback.format_exc())
 
@@ -200,7 +200,7 @@ class RedirectOutput(object):
         else:
             self._original_stdout = original_stdout
         self._original_stdout_write_type = original_stdout_write_type
-        self._run_in_bg_thread=run_in_bg_thread
+        self._run_in_bg_thread = run_in_bg_thread
         self._output_handlers = output_handlers
         if auto_start:
             # 自动启动输出重定向

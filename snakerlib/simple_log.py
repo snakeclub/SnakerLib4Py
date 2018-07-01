@@ -196,19 +196,19 @@ _LOGGER_DEFAULT_JSON_STR = u'''{
             "encoding": "utf8"
         }
     },
-    
+
     "loggers": {
         "Console": {
             "level": "DEBUG",
             "handlers": ["ConsoleHandler"]
         },
-        
+
         "File": {
             "level": "INFO",
             "handlers": ["FileHandler"],
             "propagate": "no"
         },
-        
+
         "ConsoleAndFile": {
             "level": "DEBUG",
             "handlers": ["ConsoleHandler", "FileHandler"],
@@ -289,7 +289,7 @@ class Logger(object):
     @classGroup
     @classVersion 0.9.0
     @classDescription 封装Python自带logging库的日志类，简化日志类的配置和输出
-    
+
     @classExample {Python} 使用说明:
         使用说明：
         1、import snakerlib.simple_log
@@ -361,7 +361,7 @@ class Logger(object):
         @funGroup
         @funVersion
         @funDescription 初始化日志类，生成日志对象实例
-        
+
         @funParam {string} conf_file_name 日志配置文件路径和文件名:
             默认为'logger.conf'，如果找不到配置文件本函数会自动创带默认设置的配置文件
             如果日志类型为EnumLoggerConfigType.JSON_STR，则该参数为JSON配置信息，如果为None则自动取默认配置值
@@ -377,12 +377,12 @@ class Logger(object):
         @funParam {bool} is_create_logfile_by_day 是否按天生成新的日志文件，默认为True
         @funParam {int} call_level 调用write_log函数输出文件名和函数名的层级:
             0代表获取直接调用函数；1代表获取直接调用函数的上一级
-        
+
         @funExample {Python} 参考示例:
             log = Logger(conf_file_name='/root/logger.conf', logger_name='ConsoleAndFile',
                         logfile_path="appname.log', auto_create_conf=True)
             log.write_log(log_level=EnumLogLevel.INFO, log_str='输出日志内容'):
-        
+
         """
         # 设置默认值
         self.__file_date = ''
@@ -396,7 +396,7 @@ class Logger(object):
         if config_type in (EnumLoggerConfigType.INI_FILE, EnumLoggerConfigType.JSON_FILE):
             _path_dir, _path_file_name = os.path.split(os.path.realpath(self.__conf_file_name))
             self.__conf_tmp_file_name = (self.__work_path + os.sep + _path_file_name + '.tmp'
-                                     + self.__file_date + str(uuid.uuid4()))
+                                         + self.__file_date + str(uuid.uuid4()))
         self.__is_print_file_name = is_print_file_name
         self.__is_print_fun_name = is_print_fun_name
         self.__is_create_logfile_by_day = is_create_logfile_by_day
@@ -430,7 +430,7 @@ class Logger(object):
         @funGroup
         @funVersion
         @funDescription 当删除日志对象时，删除对应的日志类实例
-        
+
         """
         # 删除对象
         if self.__logger is not None:
@@ -445,9 +445,9 @@ class Logger(object):
         @funGroup
         @funVersion
         @funDescription 将datetime转换为yyyyMMdd的字符串格式
-        
+
         @funParam {datetime} dt 要处理的日期变量
-        
+
         @funReturn {string} 转换后的日期字符串；如果传入的不是datetime格式，返回""
 
         """
@@ -491,7 +491,7 @@ class Logger(object):
         @funGroup
         @funVersion
         @funDescription 检查类中指定的配置文件是否存在，如果不存在则进行创建
-        
+
         """
         _path_dir, _path_file_name = os.path.split(os.path.realpath(self.__conf_file_name))
         if not os.path.exists(_path_dir):
@@ -507,9 +507,11 @@ class Logger(object):
             # 文件不存在，创建文件并写入特殊值
             with open(self.__conf_file_name, 'w+', encoding='utf-8') as f:
                 if self.__config_type == EnumLoggerConfigType.INI_FILE:
-                    f.write(_LOGGER_DEFAULT_CONF_STR.replace('{$log_file_path$}', _temp_logfile_path))
+                    f.write(_LOGGER_DEFAULT_CONF_STR.replace(
+                        '{$log_file_path$}', _temp_logfile_path))
                 else:
-                    f.write(_LOGGER_DEFAULT_JSON_STR.replace('{$log_file_path$}', _temp_logfile_path))
+                    f.write(_LOGGER_DEFAULT_JSON_STR.replace(
+                        '{$log_file_path$}', _temp_logfile_path))
 
     def __create_log_dir(self):
         """
@@ -692,7 +694,7 @@ class Logger(object):
             log = Logger(conf_file_name="/root/logger.conf",logger_name="ConsoleAndFile",
                 logfile_path="appname.log",auto_create_conf=True)
             log.write_log(log_level=EnumLogLevel.ERROR,log_str="输出日志内容"):
-        
+
         """
         self.__check_log_date()  # 检查日志文件是否要翻日
         # 处理文件名和函数名
@@ -832,11 +834,11 @@ class Logger(object):
         @funGroup
         @funVersion
         @funDescription 修改输出日志类型配置
-        
+
         @funParam {string} logger_name 输出日志类型，默认为'root':
             root-输出到屏幕,File-输出到文件,ConsoleAndFile-同时输出到屏幕和文件
             如果没有自定义日志类型，可以使用EnumLoggerName枚举值,用法为：EnumLoggerName.root.value
-        
+
         """
         self.__logger_name = logger_name
         if self.__is_create_logfile_by_day:

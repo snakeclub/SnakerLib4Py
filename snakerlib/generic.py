@@ -48,7 +48,7 @@ DEBUG_TOOLS_JSON_PARA = u'''{
             "stream": "ext://sys.stdout"
         }
     },
-    
+
     "loggers": {
         "DebugToolsConsole": {
             "level": "DEBUG",
@@ -708,14 +708,14 @@ class StringTools(object):
         @funGroup
         @funVersion
         @funDescription 将byte串转换为哈希字符串
-        
+
         @funParam {byte[]} byte_array 需要转换的byte数组
-        
+
         @funReturn {string} 转换后的hex字符串
-        
+
         @funExample {Python} 参考示例:
             StringTools.bytes_to_hex(bytes("test string", encoding='utf-8'))
-        
+
         """
         return ''.join(["%02X" % x for x in byte_array]).strip()
 
@@ -727,14 +727,14 @@ class StringTools(object):
         @funGroup
         @funVersion
         @funDescription 将哈希字符串转换为byte数组
-        
+
         @funParam {string} hex_str 需要转换的Hex样式的字符串
-        
+
         @funReturn {byte[]} byte数组
-        
+
         @funExample {Python} 参考示例:
             StringTools.hex_to_bytes("A3D3F33433")
-        
+
         """
         return bytes.fromhex(hex_str)
 
@@ -746,17 +746,17 @@ class StringTools(object):
         @funGroup
         @funVersion
         @funDescription 用指定字符填充字符串达到固定长度
-        
+
         @funParam {string} deal_str 要处理的字符串
         @funParam {int} fix_len 返回字符串的固定长度
         @funParam {string} fill_char 填充字符(单字符)
         @funParam {bool} left 填充方向，True-左填充，False-右填充
-        
+
         @funReturn {string} 如果原字符串长度已超过指定长度，则直接返回原字符串；否则返回处理后的字符串
-        
+
         @funExample {Python} 参考示例:
             fix_str = StringTools.fill_fix_string('My job is', 50, ' ', False)
-        
+
         """
         _str = copy.deepcopy(deal_str)
         # 生成填充串
@@ -784,14 +784,14 @@ class StringTools(object):
                 10 - 数字
                 True - bool类型
             2、如果数组有嵌套，可以支持嵌套的模式
-        
+
         @funParam {string} deal_str 要提炼的字符串，内部要含有[a,b,c,d,'d']这类的字符串，例如'dfdfdfd[ddd,aa,dd]'
-        
+
         @funReturn {list} 抽离出来的数组
-        
+
         @funExample {Python} 参考示例:
             mylist = StringTools.get_list_from_str('aaa["a", 10, [39, 4], True, 21.4]bbb')
-        
+
         """
         _array = []
         _index1 = deal_str.find("[")
@@ -810,15 +810,15 @@ class StringTools(object):
         @funGroup
         @funVersion
         @funDescription 随机生成固定长度的字符串
-        
+
         @funParam {int} random_length 需生成的字符串长度
         @funParam {string} chars 随机抽取的字符串内容
-        
+
         @funReturn {string} 返回的字符串
-        
+
         @funExample {Python} 参考示例:
             randomstr = StringTools.get_random_str(10)
-        
+
         """
         _str = ''
         length = len(chars) - 1
@@ -835,15 +835,15 @@ class StringTools(object):
         @funGroup
         @funVersion
         @funDescription 将对象属性格式化为可打印字符串
-        
+
         @funParam {object} obj 要格式化的对象
         @funParam {bool} is_deal_subobj 是否要打印属性对象的子属性
         @funParam {int} c_level 打印级别（根据级别调整缩进位数，每一级缩进2个空格）
         @funParam {int} max_level 最大检索级别，<=0代表不进行限制
         @funParam {bool} is_same_line 输出内容是否不换行，内部使用，如果不换行则忽略缩进
-        
+
         @funReturn {string} 返回格式化后的字符串
-        
+
         @funExample {Python} 参考示例:
             obj = NullObj()
             obj.aa = 1
@@ -852,18 +852,20 @@ class StringTools(object):
             obj.kk.abc = 3
             obj.kk.bcd = 'dfdfd'
             print(StringTools.format_obj_property_str(obj=obj,is_deal_subobj=True))
-        
+
         """
         # 先打印对象自身
         _indent_str = ''
         if not is_same_line:
-            _indent_str = StringTools.fill_fix_string(deal_str='', fix_len=c_level * 2, fill_char=' ', left=True)
+            _indent_str = StringTools.fill_fix_string(
+                deal_str='', fix_len=c_level * 2, fill_char=' ', left=True)
         _retstr = '%stype(%s) ' % (
             _indent_str,
             type(deal_obj)
         )
         if is_deal_subobj and (max_level <= 0 or (max_level > c_level)):
-            _indent_str = StringTools.fill_fix_string(deal_str='', fix_len=(c_level+1) * 2, fill_char=' ', left=True)
+            _indent_str = StringTools.fill_fix_string(
+                deal_str='', fix_len=(c_level+1) * 2, fill_char=' ', left=True)
             # 要打印子对象,区分类型进行处理
             if type(deal_obj) in (list, tuple):
                 # 数组和列表
@@ -871,7 +873,7 @@ class StringTools(object):
                 while _index < len(deal_obj):
                     _retstr = (
                         _retstr + '\n' + _indent_str
-                        + '[index:'+ str(_index) +'] '
+                        + '[index:' + str(_index) + '] '
                         + StringTools.format_obj_property_str(
                             deal_obj[_index], is_deal_subobj=is_deal_subobj,
                             c_level=c_level + 1, max_level=max_level, is_same_line=True
@@ -897,7 +899,7 @@ class StringTools(object):
                     _attr_print = True
                     _attr_dir = dir(deal_obj)
                     for _item in _attr_dir:
-                        if _item[0: 2] != '__' and not callable(getattr(deal_obj,_item)):
+                        if _item[0: 2] != '__' and not callable(getattr(deal_obj, _item)):
                             _retstr = (
                                 _retstr + "\n" + _indent_str
                                 + _item + '(attr): '
@@ -913,7 +915,7 @@ class StringTools(object):
                         if _attr_print and _item[0] not in _attr_dir:
                             _retstr = (
                                 _retstr + "\n" + _indent_str
-                                + _item[0] +'(__dict__): '
+                                + _item[0] + '(__dict__): '
                                 + StringTools.format_obj_property_str(
                                     _item[1], is_deal_subobj=is_deal_subobj,
                                     c_level=c_level + 2, max_level=max_level, is_same_line=True
@@ -1060,7 +1062,7 @@ class NetTools(object):
         @funExcepiton:
             OverflowError 整数转换出的字节数组长度超过了定义数组的长度，则产生该问题；signed为False（无符号位），但:
                 要转换的整数为负数时，也会产生该异常
-        
+
         @funParam {int} int_value 要转换的数字
         @funParam {int} fix_len 返回数组的长度，如果整数转换出的字节数组长度超过了该长度，则产生OverflowError
         @funParam {string} byte_order 字节顺序，值为'big'或者'little':
@@ -1068,9 +1070,9 @@ class NetTools(object):
             little - 表示最有意义的字节放在字节数组的结尾
             sys.byteorder - 保存了主机系统的字节序，可以使用这个属性获取本机顺序
         @funParam {bool} signed 确定是否使用补码来表示整数，如果值为False，并且是负数，则产生OverflowError
-        
+
         @funReturn {bytes} 转换后的字节数组
-        
+
         """
         return int_value.to_bytes(length=fix_len, byteorder=byte_order, signed=signed)
 
@@ -1138,13 +1140,13 @@ class RunTools(object):
         @funGroup
         @funVersion
         @funDescription 获取Key=Value格式的命令行输入参数
-        
+
         @funReturn {dict} 命令行参数字典：key为参数名，value为参数值
-        
+
         @funExample {Python} 示例名:
             命令行# python ggeneric.py key1=value1 key2=value2 key3="value 3" "key 4"=value4 "key 5"="value 5"
             input_para = RunTools.get_kv_opts()
-        
+
         """
         # 建立要返回的字典
         _dict = {}
@@ -1169,11 +1171,11 @@ class RunTools(object):
         @funGroup
         @funVersion
         @funDescription 判断变量是否已定义
-        
+
         @funParam {string} name_str 变量名（注意是名字字符串，不是传入变量）
-        
+
         @funReturn {bool} 是否已定义，True-已定义，False-未定义
-        
+
         """
         try:
             type(eval(name_str))
@@ -1190,7 +1192,7 @@ class RunTools(object):
         @funGroup
         @funVersion
         @funDescription 根据日志级别调用日志类的不同方法，简化日志级别的判断处理
-        
+
         @funParam {object} logger 日志对象，如果为None代表不需要输出日志，传入对象需满足:
             1、标准logging的logger对象
             2、自定义的日志类对象，但应实现warning、error的标准方法
@@ -1282,12 +1284,12 @@ class RunTools(object):
         @funGroup
         @funVersion
         @funDescription 进程锁处理的辅助函数，获取指定进程的锁文件名（含路径）
-        
+
         @funParam {string} process_name 进程锁的进程名，默认值为''；如果为''代表获取执行程序的模块名
         @funParam {string} base_path 进程锁文件指定的路径，默认值为''；如果为''代表获取执行程序的模块文件目录
-        
+
         @funReturn {string} 锁文件名（含路径）
-        
+
         """
         _process_name = process_name
         _base_path = base_path
@@ -1313,13 +1315,14 @@ class RunTools(object):
         @funGroup
         @funVersion
         @funDescription 进程锁处理的辅助函数，强制删除进程锁文件
-        
+
         @funParam {string} process_name 进程锁的进程名，默认值为''；如果为''代表获取执行程序的模块名
         @funParam {string} base_path 进程锁文件指定的路径，默认值为''；如果为''代表获取执行程序的模块文件目录
-        
+
         """
         try:
-            _lock_file = RunTools.single_process_get_lockfile(process_name=process_name, base_path=base_path)
+            _lock_file = RunTools.single_process_get_lockfile(
+                process_name=process_name, base_path=base_path)
             if os.path.exists(_lock_file) and os.path.isfile(_lock_file):
                 os.remove(_lock_file)
         except:
@@ -1333,13 +1336,13 @@ class RunTools(object):
         @funGroup
         @funVersion
         @funDescription 获取进程锁：如果获取失败代表锁已被其他进程占有，可选择结束进程以控制同一时间只有一个进程执行
-        
+
         @funParam {string} process_name 进程锁的进程名，默认值为''；如果为''代表获取执行程序的模块名
         @funParam {string} base_path 进程锁文件指定的路径，默认值为''；如果为''代表获取执行程序的模块文件目录
         @funParam {bool} is_try_del_lockfile 是否尝试先删除锁文件（可以应对强制关闭进程未自动删除锁文件的情况）
-        
+
         @funReturn {bool} 是否获取进程锁成功：True - 获取成功并占用锁；False - 获取失败，应选择关闭进程
-        
+
         @funExample {Python} 参考示例:
             get_process_lock = RunTools.single_process_enter("CFuntion","c:/test/")
             if not get_process_lock:
@@ -1350,13 +1353,14 @@ class RunTools(object):
                 do something ...
             finally:
                 RunTools.single_process_exit("CFuntion","c:/test/")
-        
+
         """
         global SINGLE_PROCESS_PID_FILE_LIST
         if not RunTools.var_defined("SINGLE_PROCESS_PID_FILE_LIST"):
             SINGLE_PROCESS_PID_FILE_LIST = {}
         # 要建立锁的文件名
-        _lock_file = RunTools.single_process_get_lockfile(process_name=process_name, base_path=base_path)
+        _lock_file = RunTools.single_process_get_lockfile(
+            process_name=process_name, base_path=base_path)
         # 尝试自动先删除锁文件
         if is_try_del_lockfile:
             RunTools.single_process_del_lockfile(process_name=process_name, base_path=base_path)
@@ -1379,7 +1383,7 @@ class RunTools(object):
         @funDescription 结束进程锁控制:
             1、结束单进程控制，删除锁文件；
             2、注意必须在程序执行完后一定要调用这个函数，否则会导致一直锁住
-        
+
         @funParam {string} process_name 进程锁的进程名，默认值为''；如果为''代表获取执行程序的模块名
         @funParam {string} base_path 进程锁文件指定的路径，默认值为''；如果为''代表获取执行程序的模块文件目录
 
@@ -1388,7 +1392,8 @@ class RunTools(object):
         if not RunTools.var_defined("SINGLE_PROCESS_PID_FILE_LIST"):
             SINGLE_PROCESS_PID_FILE_LIST = {}
         # 要建立锁的文件名
-        _lock_file = RunTools.single_process_get_lockfile(process_name=process_name, base_path=base_path)
+        _lock_file = RunTools.single_process_get_lockfile(
+            process_name=process_name, base_path=base_path)
         try:
             os.close(SINGLE_PROCESS_PID_FILE_LIST[_lock_file])
             os.remove(_lock_file)
@@ -1406,7 +1411,7 @@ class RunTools(object):
         @funGroup
         @funVersion
         @funDescription 封装with模式的调用方式来实现单进程控制
-        
+
         @funParam {string} process_name 进程锁的进程名，默认值为''；如果为''代表获取执行程序的模块名
         @funParam {string} base_path 进程锁文件指定的路径，默认值为''；如果为''代表获取执行程序的模块文件目录
         @funParam {bool} is_try_del_lockfile 是否尝试先删除锁文件（可以应对强制关闭进程未自动删除锁文件的情况）
@@ -1415,11 +1420,11 @@ class RunTools(object):
             2、自定义的日志类对象，但应实现warning、error等的标准方法
         @funParam {EnumLogLevel} log_level 需要输出的自定义日志级别
         @funParam {int} exit_code 控制获取进程锁失败退出的错误码定义
-        
+
         @funExample {Python} 参考示例:
             with RunTools.single_process_with():
                 # 以下为需要执行的程序逻辑
-        
+
         """
         _get_process_lock = RunTools.single_process_enter(process_name=process_name,
                                                           base_path=base_path, is_try_del_lockfile=is_try_del_lockfile)
