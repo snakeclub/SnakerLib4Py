@@ -828,6 +828,29 @@ class StringTools(object):
         return _str
 
     @staticmethod
+    def get_n_index(src, sub, n=1, start=0):
+        """
+        查找第n次出现子字符串的位置
+
+        @decorators staticmethod
+
+        @param {string} src - 要处理的字符串
+        @param {string} sub - 要查找的子字符串
+
+        @param {int} [n=1] - 要查找的字符串出现次数
+        @param {int} [start=0] - 查找开始位置
+
+        @returns {int} - 返回找到的位置，如果找不到返回-1
+        """
+        if n < 1:
+            # 已找不到了
+            return -1
+        index = src.find(sub, start)
+        if index != -1 and n > 1:
+            return StringTools.get_n_index(src, sub, n - 1, index + len(sub))
+        return index
+
+    @staticmethod
     def format_obj_property_str(deal_obj, is_deal_subobj=False, c_level=0, max_level=10, is_same_line=False):
         """
         @fun 将对象属性格式化为可打印字符串
