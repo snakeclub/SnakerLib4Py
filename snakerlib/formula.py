@@ -7,8 +7,8 @@ import copy
 import datetime
 from operator import itemgetter
 from enum import Enum
-from snakerlib.simple_stream import StringStream
-from snakerlib.generic import NullObj, DebugTools, StringTools
+from .simple_stream import StringStream
+from .generic import NullObj, DebugTools, StringTools
 
 
 __MoudleName__ = 'formula'

@@ -14,8 +14,8 @@ import logging.config
 import threading
 import json
 from enum import Enum
-from generic_enum import EnumLogLevel
-from generic import FileTools
+from .generic_enum import EnumLogLevel
+from .generic import FileTools
 
 
 __MoudleName__ = 'simple_log'

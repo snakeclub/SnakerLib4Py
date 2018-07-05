@@ -9,7 +9,7 @@ import traceback
 import threading
 from enum import Enum
 from abc import ABC, abstractmethod  # 利用abc模块实现抽象类
-from generic import NullObj
+from .generic import NullObj
 
 
 __MoudleName__ = 'simple_stream'

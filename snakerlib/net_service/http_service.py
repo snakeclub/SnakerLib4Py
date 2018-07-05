@@ -7,8 +7,8 @@ from datetime import datetime
 from time import mktime
 from enum import Enum
 from wsgiref.handlers import format_date_time
-from net_service.tcpip_service import *
-from generic import *
+from .tcpip_service import *
+from ..generic import *
 
 
 __MoudleName__ = 'http_service'
@@ -220,14 +220,14 @@ class HttpService(TcpIpService):
         @funGroup 所属分组
         @funVersion 版本
         @funDescription 按照HTTP协议，逐个字符获取报文头内容，直到报文头收取完整
-        
+
         @funParam {object} net_info 网络连接信息（TcpIpNetInfo类）
-        
+
         @funReturn {generic.CResult} 数据获取结果:
             result.code ：0-成功，4-获取数据超时，其他为获取失败
             result.head_dict ：获取到的报文头对象（说明参考create_http_head的注释）
             result.recv_time : datetime 实际开始接受时间
-        
+
         """
         _result = CResult(code=0, msg=u'成功')
         _result.head_dict = NullObj()
@@ -399,19 +399,19 @@ class HttpService(TcpIpService):
         @funGroup 所属分组
         @funVersion 版本
         @funDescription 同时实现了与服务器的短连接
-        
+
         @funParam {object} server_opts 网络服务启动参数:
             可以从HttpService.default_tcpip_opts()获取到默认的参数对象，再进行修改
         @funParam {object} head_dict Http报文头对象（说明参考create_http_head的注释）
         @funParam {bytes[]} body 要发送的http内容字节数组
-        
+
         @funReturn {generic.CResult} 发送结果
             result.code ：0-成功，其他为发送失败
             result.head_dict ：返回报文的报文头对象（说明参考create_http_head的注释）
             result.body ：bytes，返回报文的报文体数据字节数组
             result.send_time : datetime 实际发送完成时间
             result.recv_time : datetime 实际开始接受时间
-        
+
         """
         _result = CResult(code=0, msg=u'成功')
         _result.head_dict = None
@@ -576,12 +576,12 @@ class HttpService(TcpIpService):
         @funVersion 版本
         @funDescription 每个连接执行该函数获取数据及返回数据，完成后关闭连接并退出:
             暂时不支持长连接模式，后续可改进增加该支持
-        
+
         @funParam {int} thread_id 线程ID
         @funParam {object} server_opts 服务器参数，属性值参考HttpService.default_tcpip_opts()
         @funParam {TcpIpNetInfo} net_info 网络信息对象（TcpIpNetInfo类）
         @funParam {string} self_tag 用于发起端传入自身的识别标识
-        
+
         """
         # 获取报文头
         _result = self.get_http_head(net_info=net_info)
@@ -690,7 +690,7 @@ class HttpService(TcpIpService):
         @funGroup 所属分组
         @funVersion 版本
         @funDescription 该构造函数在通用框架的基础上增加了server_http_deal_Fun入参，用于简化HTTP协议的服务端处理
-        
+
         @funParam {object} logger 日志对象，服务过程中通过该函数写日志:
             可以为标准的logging日志库对象，也可以为simple_log对象，但要求对象实现:
             标准的info、debug、warning、error、critical五个日志方法

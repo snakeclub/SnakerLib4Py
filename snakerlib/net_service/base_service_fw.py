@@ -8,8 +8,8 @@ import time
 import threading
 from enum import Enum
 from abc import ABC, abstractmethod  # 利用abc模块实现抽象类
-from generic_enum import EnumLogLevel
-from generic import ExceptionTools, CResult, StringTools, DebugTools
+from ..generic_enum import EnumLogLevel
+from ..generic import ExceptionTools, CResult, StringTools, DebugTools
 
 
 __MoudleName__ = 'base_service_fw'
@@ -40,7 +40,7 @@ class BaseServiceFW(ABC):
     @classGroup
     @classVersion 1.0.0
     @classDescription 抽象网络编程的公共方法形成框架，并提供基本的处理功能，简化网络协议编程的难度
-    
+
     @classExample {Python} 使用参考:
         1、服务器端的使用方法，假设实现类为XService
         def server_status_info_fun(server_status, result):
@@ -156,7 +156,7 @@ class BaseServiceFW(ABC):
         @funGroup 所属分组
         @funVersion 版本
         @funDescription 进行服务器的状态变更，并调用server_status_info_fun通知调用者
-        
+
         @funParam {EnumNetServerRunStatus} server_status 要修改的服务器状态
         @funParam {generic.CResult} result 通用执行结果对象，其中自定义属性self_tag为发起方识别标识
 
@@ -239,7 +239,7 @@ class BaseServiceFW(ABC):
             2、循环获取连接_accept_one
             3、每一个连接启动一个处理线程__server_connect_thread_fun
             4、本线程结束就代表网络服务停止
-        
+
         @funParam {int} tid 线程id
         @funParam {object} server_opts 服务启动参数
 
@@ -429,7 +429,7 @@ class BaseServiceFW(ABC):
         @funGroup 所属分组
         @funVersion 版本
         @funDescription 构造函数
-        
+
         @funParam {object} logger 日志对象，服务过程中通过该函数写日志:
             可以为标准的logging日志库对象，也可以为simple_log对象，但要求对象实现:
             标准的info、debug、warning、error、critical五个日志方法
@@ -462,10 +462,10 @@ class BaseServiceFW(ABC):
         @funGroup 所属分组
         @funVersion 版本
         @funDescription 根据传入的服务器参数，启动网络服务监听线程，注意服务必须处于停止状态才能启动
-        
+
         @funParam {object} server_opts 启动服务器参数，由框架的实际实现类进行定义:
             子类通过_serverOpts.xxx获取具体的属性值
-        
+
         @funReturn {generic.CResult} 启动结果，result.code：0-成功，1-服务不属于停止状态，不能启动，-1-异常
 
         """
@@ -507,9 +507,9 @@ class BaseServiceFW(ABC):
         @funVersion 版本
         @funDescription 关闭网络服务，设置网络服务为WaitStop-等待停止状态或ForceStop-强制停止状态，:
             由监听和处理线程内部执行关闭处理
-        
+
         @funParam {bool} is_wait 是否等待服务器所有线程都处理完成后再关闭，True-等待所有线程完成处理，False-强制关闭
-        
+
         @funReturn {generic.CResult} 停止结果，result.code：0-成功，2-停止服务失败：服务不处于运行状态，-1-异常
 
         """
@@ -560,9 +560,9 @@ class BaseServiceFW(ABC):
         @funVersion 版本
         @funDescription 启动服务但不接受请求服务，该方法只做到启动端口层面，轮询监听不在该方法中实现:
             注意该该函数必须捕获并处理异常
-        
+
         @funParam {object} server_opts 参数说明
-        
+
         @funReturn {generic.CResult} 启动结果:
             result.code ：0-成功，其他值为失败
             result.net_info ：启动后的服务端网络连接信息对象，该对象将传给后续的监听线程（_AcceptOne）
@@ -579,10 +579,10 @@ class BaseServiceFW(ABC):
         @funGroup 所属分组
         @funVersion 版本
         @funDescription 提供监听并获取到请求连接返回的方法；注意该该函数必须捕获并处理异常
-        
+
         @funParam {objcet} server_opts 网络服务启动参数
         @funParam {objcet} net_info 网络连接信息对象，_start_server_without_accept中获取到的结果
-        
+
         @funReturn {generic.CResult} 获取网络连接结果:
             result.code ：0-成功，3-获取客户端连接请求超时
             result.net_info ：客户端连接信息对象，该对象将传给后续单个连接处理的线程
@@ -602,10 +602,10 @@ class BaseServiceFW(ABC):
         @funGroup 所属分组
         @funVersion 版本
         @funDescription 从指定的网络连接中读取数据
-        
+
         @funParam {object} net_info 要读取数据的网络信息对象（例如socket对象）
         @funParam {object} recv_para 读取数据的参数（例如长度、超时时间等，由实现类自定义）
-        
+
         @funReturn {generic.CResult} 数据获取结果:
             result.code ：0-成功，4-获取数据超时，其他为获取失败
             result.data ：获取到的数据对象（具体类型和定义，由实现类自定义）
@@ -624,7 +624,7 @@ class BaseServiceFW(ABC):
         @funGroup
         @funVersion
         @funDescription 向指定的网络连接发送数据
-        
+
         @funParam {object} net_info 要写入数据的网络信息对象（例如socket对象）
         @funParam {object} send_para 写入数据的参数（例如长度、超时时间等，由实现类自定义）
         @funParam {object} data 要写入的数据对象（具体类型和定义，由实现类自定义）
@@ -646,12 +646,12 @@ class BaseServiceFW(ABC):
         @funGroup
         @funVersion
         @funDescription 关闭指定的网络连接，注意该该函数必须捕获并处理异常
-        
+
         @funParam {object} net_info 需要关闭的网络连接信息对象
-        
+
         @funReturn {generic.CResult} 关闭结果
             result.code ：0-成功，其他值为失败
-        
+
         """
         # 子类必须定义该功能
         pass
@@ -665,9 +665,9 @@ class BaseServiceFW(ABC):
         @funGroup
         @funVersion
         @funDescription 客户端通过该函数连接服务器端
-        
+
         @funParam {object} connect_para 需要连接服务器的参数（例如IP、端口、超时时间等，由实现类自定义）
-        
+
         @funReturn {generic.CResult} 连接结果:
             result.code ：0-成功，其他值为失败
             result.net_info ： 连接后的网络信息对象
@@ -684,11 +684,11 @@ class BaseServiceFW(ABC):
         @funGroup
         @funVersion
         @funDescription 通用的获取服务器信息函数，根据传入的参数获取参数值（具体可以获取什么参数由实现类自定义）
-        
+
         @funParam {string} para_name 参数名
-        
+
         @funReturn {object} 返回具体的参数值对象（实现类自定义）
-        
+
         """
         pass
 
@@ -701,12 +701,12 @@ class BaseServiceFW(ABC):
         @funGroup
         @funVersion
         @funDescription 获取指定客户端连接的信息，根据传入的参数获取参数值（具体可以获取什么参数由实现类自定义）
-        
+
         @funParam {object} net_info 客户端网络连接信息对象
         @funParam {string} para_name 参数名
-        
+
         @funReturn {object} 返回具体的参数值对象（实现类自定义）
-        
+
         """
         pass
 

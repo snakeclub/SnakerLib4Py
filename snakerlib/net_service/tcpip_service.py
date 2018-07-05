@@ -6,9 +6,9 @@
 import socket
 from datetime import datetime
 import platform
-from net_service.base_service_fw import BaseServiceFW
-from generic import NullObj, CResult, ExceptionTools, DebugTools
-from generic_enum import EnumLogLevel
+from .base_service_fw import BaseServiceFW
+from ..generic import NullObj, CResult, ExceptionTools, DebugTools
+from ..generic_enum import EnumLogLevel
 
 
 __MoudleName__ = 'tcpip_service'
@@ -25,7 +25,7 @@ class TcpIpNetInfo(object):
     @classGroup 所属分组
     @classVersion 1.0.0
     @classDescription 定义net_info的属性
-        
+
     """
 
     def __init__(self, socket_obj=None, laddr=None, raddr=None, caddr=None, auto_fill=False):
@@ -404,13 +404,13 @@ class TcpIpService(BaseServiceFW):
         @funGroup 所属分组
         @funVersion 版本
         @funDescription 通用的获取服务器信息函数，根据传入的参数获取参数值
-        
+
         @funParam {string} para_name 参数名，以下为参数名和参数值的对应
             ServerIp : string 服务IP
             ServerPort : int 监听端口
-        
+
         @funReturn {object} 返回具体的参数值对象，如果没有值传None
-        
+
         """
         if para_name == "ServerIp":
             return self._server_opts.host_name

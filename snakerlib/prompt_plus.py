@@ -39,8 +39,8 @@ from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.styles import Style
 from prompt_toolkit.lexers import Lexer
 from prompt_toolkit.completion import Completer, Completion
-from generic import CResult, ExceptionTools
-from simple_stream import StringStream
+from .generic import CResult, ExceptionTools
+from .simple_stream import StringStream
 
 
 """

@@ -14,7 +14,7 @@ import logging
 import logging.config
 from random import Random
 from contextlib import contextmanager
-from generic_enum import EnumLogLevel
+from .generic_enum import EnumLogLevel
 
 
 __MoudleName__ = 'generic'

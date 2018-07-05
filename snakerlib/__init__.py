@@ -16,5 +16,5 @@
 # 'parallel' 暂时先不支持
 __all__ = [
     'formula', 'generic', 'generic_enum', 'prompt_plus', 'redirect_stdout',
-    'simple_cache', 'simple_log', 'simple_stream'
+    'simple_cache', 'simple_log', 'simple_stream', 'net_service'
 ]
