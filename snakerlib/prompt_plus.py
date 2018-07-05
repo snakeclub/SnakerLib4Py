@@ -892,15 +892,15 @@ class PromptPlus(object):
     # 关键字配色方案，每个配色方案格式为'#000088 bg:#aaaaff underline'
     _default_color_set = {
         # 用户输入
-        '': '#ffffff',  # 默认输入
-        'cmd': '#66ff66',  # 命令
-        'name_para': '#00FFFF',  # key-value形式参数名
-        'short_para': '#00FFFF',  # -char形式的短参数字符
-        'long_para': '#ff8c00',  # -name形式的长参数字符
-        'wrong_tip': '#ff0000 bg:#ffffff reverse',  # 错误的命令或参数名提示
+        '': '#ffffff',  # 默认输入ffffff
+        'cmd': '#00FF00',  # 命令
+        'name_para': '#00FFFF',  # key-value形式参数名 00FFFF
+        'short_para': '#FFFF00',  # -char形式的短参数字符 00FFFF
+        'long_para': '#FF00FF',  # -name形式的长参数字符 ff8c00
+        'wrong_tip': '#C0C0C0 bg:#FF0000 reverse',  # 错误的命令或参数名提示 #ff0000 bg:#ffffff reverse
 
         # prompt提示信息
-        'prompt': '#EEEEEE'
+        'prompt': '#C0C0C0'
     }
 
     #############################
@@ -914,6 +914,13 @@ class PromptPlus(object):
         @throws {ValueError} - 当传入的参数值不对的时候抛出该异常
         """
         # 根据传入参数设置一些特殊值，简化外部处理
+        # cmd_para
+        if 'cmd_para' in self._prompt_init_para.keys():
+            for _key in self._prompt_init_para['cmd_para'].keys():
+                _temp_para = copy.deepcopy(self._cmd_para_default)
+                _temp_para.update(self._prompt_init_para['cmd_para'][_key])
+                self._prompt_init_para['cmd_para'][_key] = _temp_para
+
         # History
         if 'enable_history_search' in self._prompt_init_para.keys() \
             and self._prompt_init_para['enable_history_search'] \

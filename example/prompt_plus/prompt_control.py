@@ -4,10 +4,10 @@
 import sys
 import time
 
-sys.path.append("../../snakerlib/")
-from simple_log import *
-from prompt_plus import *
-from generic import *
+sys.path.append("../../snakerlib")
+from snakerlib.simple_log import *
+from snakerlib.prompt_plus import *
+from snakerlib.generic import *
 
 
 #############################

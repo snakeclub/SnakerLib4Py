@@ -9,7 +9,7 @@ from prompt_toolkit.styles import Style
 from prompt_toolkit.lexers import PygmentsLexer
 
 sys.path.append("../../snakerlib/")
-from prompt_plus import PromptPlus
+from snakerlib.prompt_plus import PromptPlus
 
 our_style = Style.from_dict({
     'pygments.comment':   '#888888 bold',
