@@ -513,6 +513,24 @@ class FileTools(object):
         return os.path.split(os.path.realpath(sys.argv[0]))[0]
 
     @staticmethod
+    def get_dir_name(path):
+        """
+        获取指定目录的目录名
+
+        @decorators staticmethod
+
+        @param {string} path - 要获取的目录路径
+
+        @returns {string} - 目录名
+        """
+        _path = os.path.split(os.path.realpath(path))[0].rstrip('\\/').replace('\\', '/')
+        _index = _path.rfind('/')
+        if _index >= 0:
+            return _path[_index + 1:]
+        else:
+            return _path
+
+    @staticmethod
     def create_dir(path):
         """
         @fun 创建指定的路径
