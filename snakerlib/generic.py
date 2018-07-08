@@ -5,6 +5,8 @@
 
 import sys
 import os
+import platform
+import subprocess
 import shutil
 import traceback
 import copy
@@ -630,20 +632,28 @@ class FileTools(object):
     @staticmethod
     def remove_dir(path):
         """
-        @fun 删除指定目录（及目录下的所有文件及目录）
-        @funName remove_dir
-        @funGroup 所属分组
-        @funVersion 版本
-        @funDescription 删除指定目录（及目录下的所有文件及目录）
-        @funExcepiton:
-            FileNotFoundError 找不到指定的路径时抛出该异常
-            PermissionError 没有权限时抛出该异常
-            NotADirectoryError 如果给出的路径不是目录而是文件时抛出
+        删除指定目录（及目录下的所有文件及目录）
+        由于Windows平台在处理删除目录时会存在一些权限异常，因此采用命令执行方式删除
 
-        @funParam {string} path 需要删除的路径
+        @decorators staticmethod
+
+        @param {string} path - 要删除的目录
+
+        @throws {FileNotFoundError} - 找不到指定的路径时抛出该异常
+        @throws {PermissionError} - 没有权限时抛出该异常
+        @throws {NotADirectoryError} - 如果给出的路径不是目录而是文件时抛出
 
         """
-        shutil.rmtree(path=path, ignore_errors=False)
+        if platform.system() == 'Windows':
+            real_path = os.path.realpath(path)
+            if not os.path.exists(real_path):
+                raise FileNotFoundError
+            elif os.path.isfile(real_path):
+                raise NotADirectoryError
+            if subprocess.run('rmdir /S /Q %s' % (real_path.replace('/', '\\')), shell=True).returncode != 0:
+                raise PermissionError
+        else:
+            shutil.rmtree(path=path, ignore_errors=False)
 
     @staticmethod
     def remove_file(filename):
