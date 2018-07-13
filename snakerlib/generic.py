@@ -718,6 +718,35 @@ class FileTools(object):
             FileTools.remove_file(_file)
 
     @staticmethod
+    def remove_all_with_path(path='', regex_str=''):
+        """
+        删除指定文件夹下的所有文件及文件夹
+
+        @decorators staticmethod
+
+        @param {string} path='' - 要处理的文件夹
+        @param {string} regex_str='' - 文件名匹配的正则表达式
+        """
+        _pattern = None
+        _path = os.path.realpath(path)
+        _file_names = os.listdir(_path)
+        if regex_str != "":
+            _pattern = re.compile(regex_str)
+        for fn in _file_names:
+            if _pattern is not None:
+                if not _pattern.match(fn):
+                    # 获取下一个
+                    continue
+
+            _full_filename = os.path.join(_path, fn)
+            if os.path.isfile(_full_filename):
+                # 删除文件
+                FileTools.remove_file(_full_filename)
+            else:
+                # 删除文件夹
+                FileTools.remove_dir(_full_filename)
+
+    @staticmethod
     def copy_all_with_path(src_path='', dest_path='', regex_str=''):
         """
         复制指定文件夹下的所有文件及文件夹到目标文件夹
@@ -730,8 +759,8 @@ class FileTools(object):
         """
         _pattern = None
         _dest_path = os.path.realpath(dest_path)
-        _src_path = os.path.realpath(_src_path)
-        _file_names = os.listdir(src_path)
+        _src_path = os.path.realpath(src_path)
+        _file_names = os.listdir(_src_path)
         if regex_str != "":
             _pattern = re.compile(regex_str)
         for fn in _file_names:
