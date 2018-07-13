@@ -717,6 +717,38 @@ class FileTools(object):
         for _file in _files:
             FileTools.remove_file(_file)
 
+    @staticmethod
+    def copy_all_with_path(src_path='', dest_path='', regex_str=''):
+        """
+        复制指定文件夹下的所有文件及文件夹到目标文件夹
+
+        @decorators staticmethod
+
+        @param {string} src_path='' - 源文件夹
+        @param {string} dest_path='' - 目标文件夹
+        @param {string} regex_str='' - 文件名匹配的正则表达式
+        """
+        _pattern = None
+        _dest_path = os.path.realpath(dest_path)
+        _src_path = os.path.realpath(_src_path)
+        _file_names = os.listdir(src_path)
+        if regex_str != "":
+            _pattern = re.compile(regex_str)
+        for fn in _file_names:
+            if _pattern is not None:
+                if not _pattern.match(fn):
+                    # 获取下一个
+                    continue
+
+            _full_filename = os.path.join(_src_path, fn)
+            _full_destname = os.path.join(_dest_path, fn)
+            if os.path.isfile(_full_filename):
+                # 复制文件
+                shutil.copyfile(_full_filename, _full_destname)
+            else:
+                # 复制文件夹
+                shutil.copytree(_full_filename, _full_destname)
+
 
 class StringTools(object):
     """
